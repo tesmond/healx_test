@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                type: "GET",
+                url: "/list_bookmarks",
+                encode: true,
+            }).done(function (data) {
+                $("#num_results").html(
+                    "Bookmarks: " + data.total
+                );
+                results = $( "#results_body" )
+                if (data.total > 0) {
+                    $("#results").removeClass('hidden')
+                    data.results.forEach(element => {
+                        bookmark = "<a href='#' class='removeBookmark' doc_id='" + element.id + "'>Remove Bookmark</a>"
+                       
+                        results.append(
+                            "<tr><td>" + bookmark + "</td>" +
+                            "<td>" + element.title + "</td>" +
+                            "<td>" + element.authors + "</td>" + 
+                            "<td>" + element.date + "</td>" + 
+                            "<td>" + element.journal + "</td>" + 
+                            "<td><a href='" + element.url + "'>" + element.url + "</a></td></tr>");
+                    });
+                }
+            });
+
+            $(document).on('click', '.removeBookmark' , function(event) {
+                event.preventDefault();
+                doc_id = $(this).attr('doc_id');
+                url = "/remove_bookmark/" + doc_id;
+                bm_url = $(this);
+                $.ajax({
+                    type: "PATCH",
+                    url: url,
+                }).done(function (data) {
+                    bm_url.closest('tr').remove();
+                });
+            });
+        });
+    </script>
+        <style>
+            table {
+                border-collapse: collapse;
+                margin: 25px 0;
+                font-size: 0.9em;
+            }
+            table thead tr {
+                background-color: #009879;
+                color: #ffffff;
+            }
+            th, td {
+                padding: 6px 9px;
+                text-align: left;
+            }
+            tbody tr:nth-child(odd) {
+                background-color: #ccc;
+            }
+            tbody tr:nth-child(even) {
+                background-color: #fff;
+            }
+            .hidden {display: none;}
+            a {
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            .view_bookmarks {
+                margin: 8px;
+                font-size: 18px;
+            }
+            input[type="text"] {
+                font-size: 16px;
+                border-radius: 5px;
+            }
+            body {
+                background: #eee;
+                font: 14px Lucida sans, Arial, Helvetica, sans-serif;
+                color: #333;
+                text-align: center;
+            }
+            a {
+                color: #2A679F;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Allen Institute for AI Research Papers</h1>
+        <div class="view_bookmarks">
+            <a href="/">Go to Search</a>
+        </div>
+        <div id="bookmarked_list" class="hidden"></div>
+        <div id="num_results"></div>
+        <div id="results" class="hidden">
+            <table><thead>
+                <tr><th></th><th>Title</th><th>Authors</th><th>Date</th><th>Journal</th><th>URL</th></tr>
+            </thead><tbody id="results_body">
+                
+            </tbody>
+            </table>
+        </div>
+    </body>
+</html>

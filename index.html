@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            $('#search-form').submit(function( event ) {
+                event.preventDefault();
+                keyword = $('#search').val();
+                $.ajax({
+                    type: "GET",
+                    url: "/search",
+                    data: {"keyword": keyword},
+                    dataType: "json",
+                    encode: true,
+                }).done(function (data) {
+                    result_total = "Results: " + data.total
+                    if (data.total > 1000) {
+                        result_total += " displaying first 1000"
+                    }
+                    $("#num_results").html(result_total);
+                    
+                    results = $( "#results_body" )
+                    results.html('');
+                    if (data.total > 0) {
+                        $(".hidden").removeClass('hidden');
+
+                        data.results.forEach(element => {
+                            if (element.bookmarked === true) {
+                                bookmark = "<a href='#' class='removeBookmark' doc_id='" + element.id + "'>Remove Bookmark</a>"
+                            } else {
+                                bookmark =  "<a href='#' class='addBookmark' doc_id='" + element.id + "'>Add Bookmark</a>"
+                            }
+
+                            results.append(
+                                "<tr><td>" + bookmark + "</td>" +
+                                "<td>" + element.title + "</td>" +
+                                "<td>" + element.authors + "</td>" + 
+                                "<td>" + element.date + "</td>" + 
+                                "<td>" + element.journal + "</td>" + 
+                                "<td><a href='" + element.url + "'>" + element.url + "</a></td></tr>");
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '.addBookmark' , function(event) {
+                event.preventDefault();
+                doc_id = $(this).attr('doc_id');
+                url = "/add_bookmark/" + doc_id;
+                bm_url = $(this);
+                $.ajax({
+                    type: "PATCH",
+                    url: url,
+                }).done(function (data) {
+                    bm_url.removeClass('addBookmark').addClass('removeBookmark').text('Remove Bookmark');
+                });
+            });
+
+            $(document).on('click', '.removeBookmark' , function(event) {
+                event.preventDefault();
+                doc_id = $(this).attr('doc_id');
+                url = "/remove_bookmark/" + doc_id;
+                bm_url = $(this);
+                $.ajax({
+                    type: "PATCH",
+                    url: url,
+                }).done(function (data) {
+                    bm_url.removeClass('addBookmark').addClass('removeBookmark').text('Add Bookmark');
+                });
+            });
+        });
+    </script>
+        <style>
+            table {
+                border-collapse: collapse;
+                margin: 25px 0;
+                font-size: 0.9em;
+            }
+            table thead tr {
+                background-color: #009879;
+                color: #ffffff;
+            }
+            th, td {
+                padding: 6px 9px;
+                text-align: left;
+            }
+            tbody tr:nth-child(odd) {
+                background-color: #ccc;
+            }
+            tbody tr:nth-child(even) {
+                background-color: #fff;
+            }
+            .hidden {display: none;}
+            a {
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            .view_bookmarks {
+                font-size: 18px;
+                margin: 8px;
+            }
+            input[type="text"] {
+                font-size: 16px;
+                border-radius: 5px;
+            }
+            body {
+                background: #eee;
+                font: 14px Lucida sans, Arial, Helvetica, sans-serif;
+                color: #333;
+                text-align: center;
+            }
+            a {
+                color: #2A679F;
+            }
+            .form-wrapper {
+                background-color: #f6f6f6;
+                background-image: -webkit-gradient(linear, left top, left bottom, from(#f6f6f6), to(#eae8e8));
+                background-image: -webkit-linear-gradient(top, #f6f6f6, #eae8e8);
+                background-image: -moz-linear-gradient(top, #f6f6f6, #eae8e8);
+                background-image: -ms-linear-gradient(top, #f6f6f6, #eae8e8);
+                background-image: -o-linear-gradient(top, #f6f6f6, #eae8e8);
+                background-image: linear-gradient(top, #f6f6f6, #eae8e8);
+                border-color: #dedede #bababa #aaa #bababa;
+                border-style: solid;
+                border-width: 1px;
+                -webkit-border-radius: 10px;
+                -moz-border-radius: 10px;
+                border-radius: 10px;
+                -webkit-box-shadow: 0 3px 3px rgba(255,255,255,.1), 0 3px 0 #bbb, 0 4px 0 #aaa, 0 5px 5px #444;
+                -moz-box-shadow: 0 3px 3px rgba(255,255,255,.1), 0 3px 0 #bbb, 0 4px 0 #aaa, 0 5px 5px #444;
+                box-shadow: 0 3px 3px rgba(255,255,255,.1), 0 3px 0 #bbb, 0 4px 0 #aaa, 0 5px 5px #444;
+                margin: 50px auto;
+                overflow: hidden;
+                padding: 8px;
+                width: 450px;
+            }
+
+            .form-wrapper #search {
+                border: 1px solid #CCC;
+                -webkit-box-shadow: 0 1px 1px #ddd inset, 0 1px 0 #FFF;
+                -moz-box-shadow: 0 1px 1px #ddd inset, 0 1px 0 #FFF;
+                box-shadow: 0 1px 1px #ddd inset, 0 1px 0 #FFF;
+                -webkit-border-radius: 3px;
+                -moz-border-radius: 3px;
+                border-radius: 3px;
+                color: #999;
+                float: left;
+                font: 16px Lucida Sans, Trebuchet MS, Tahoma, sans-serif;
+                height: 20px;
+                padding: 10px;
+                width: 320px;
+            }
+
+            .form-wrapper #search:focus {
+                border-color: #aaa;
+                -webkit-box-shadow: 0 1px 1px #bbb inset;
+                -moz-box-shadow: 0 1px 1px #bbb inset;
+                box-shadow: 0 1px 1px #bbb inset;
+                outline: 0;
+            }
+
+            .form-wrapper #search:-moz-placeholder,
+            .form-wrapper #search:-ms-input-placeholder,
+            .form-wrapper #search::-webkit-input-placeholder {
+                color: #999;
+                font-weight: normal;
+            }
+
+            .form-wrapper #submit {
+                border: 1px solid #01251d;
+                background-color: #009879;
+                -moz-border-radius: 3px;
+                -webkit-border-radius: 3px;
+                border-radius: 3px;
+                color: #fafafa;
+                cursor: pointer;
+                height: 42px;
+                float: right;
+                font: 15px Arial, Helvetica;
+                padding: 0;
+                text-transform: uppercase;
+                text-shadow: 0 1px 0 rgba(0, 0 ,0, .3);
+                width: 100px;
+            }
+
+            .form-wrapper #submit:hover,
+            .form-wrapper #submit:focus {
+                background-color: #009879;
+            }
+
+            .form-wrapper #submit:active {
+                outline: 0;
+            }
+
+            .form-wrapper #submit::-moz-focus-inner {
+                border: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Allen Institute for AI Research Papers</h1>
+        <div class="view_bookmarks">
+            <a href="/view_bookmarks">View bookmarks</a>
+        </div>
+        <form class="form-wrapper" id="search-form" action="/">
+            <input type="text" id="search" name="keyword">
+            <input type="submit" value="Search" id="submit">
+        </form>
+
+        <div id="num_results"></div>
+        <div id="results">
+            <table class="hidden"><thead>
+                <tr><th></th><th>Title</th><th>Authors</th><th>Date</th><th>Journal</th><th>URL</th></tr>
+            </thead><tbody id="results_body">
+                
+            </tbody>
+            </table>
+        </div>
+    </body>
+</html>

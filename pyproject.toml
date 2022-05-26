@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "app"
+version = "0.0.1"
+description = "Healx simple API"
+authors = ["Andrew Gill"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+uvicorn = "~0.11.3"
+fastapi = "~0.68.0"
+python-multipart = "~0.0.5"
+pydantic = {extras = ["email"], version = "~1.8.1"}
+pandas = "*"
