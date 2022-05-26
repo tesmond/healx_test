@@ -49,3 +49,4 @@ The code represents the minimum requirement to meet the criteria that has been d
 3. Serve the search results either paginated or infinite scrolling to have a performance search page which presents all results.
 4. Store user data on a database such as POSTGRES to allow bookmarking to persist and be delivered on a per user basis.
 5. Improve the visual asthetic as this has a strong impact on [perceived usability](https://medium.com/aleph-universe/be-aware-of-aesthetic-usability-effect-in-user-research-ac4c93193089).
+6. Add a pre-commit hook which performs mypy, black and isort to maintain a common code standard.
