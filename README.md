@@ -32,7 +32,7 @@ http://localhost:8001/view_bookmarks
 
 Run `pytest test` from the base directory
 
-## Improvement considerations
+## Application Scope
 The code represents the minimum requirement to meet the criteria that has been documented. A more complex solution appeared to be outside of the scope of the exercise. The current solution has numerous issues:
 
 1. The data is loaded into memory on startup, if the application is stopped the bookmarking does not persist.
@@ -42,7 +42,7 @@ The code represents the minimum requirement to meet the criteria that has been d
 5. The webpages are minimally styled and not particularly asthetically pleasing.
 6. The search behaviour requirements were not specified, this included which fields should be searched, the sort ordering requirement and any special search text processing such as stem words or phonetic processing on author name searches. As such the simplest version; an in memory exact text match on the displayed fields was employed.
 
-## The following changes would be recommended
+## Recommended Changes
 
 1. Store the data in a better medium, the most straight forward would be to use elasticsearch. This would allow for relevance ranking results, word stemming and phonetic processing if necessary.
 2. Split the backend and frontend into separate components using a React app for the frontend and having the FastAPI backend only serve JSON data from REST requests. This should allow for straight forward caching of appropriate static resources.
