@@ -4,7 +4,7 @@ import pandas as pd
 
 def search_documents(documents: List[Dict], keyword: str, max_results: int) -> Dict:
     if not keyword:
-        return {"results": documents[:max_results]}
+        return {"results": documents[:max_results], "total": len(documents)}
 
     results = list(
         filter(
