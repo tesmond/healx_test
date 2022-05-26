@@ -40,7 +40,7 @@ The code represents the minimum requirement to meet the criteria that has been d
 3. Bookmarking is stored on a global basis. If this application is used by multiple users
 4. The first 1000 entries are displayed from a search to keep reasonable performance. 
 5. The webpages are minimally styled and not particularly asthetically pleasing.
-6. The search behaviour requirements were not specified, this included which fields should be searched, the sort ordering requirement and any special search text processing such as stem words or phonetic processing on author name searches. As such the simplest version an in memory exact text match to the indexed fields was employed.
+6. The search behaviour requirements were not specified, this included which fields should be searched, the sort ordering requirement and any special search text processing such as stem words or phonetic processing on author name searches. As such the simplest version; an in memory exact text match on the displayed fields was employed.
 
 ## The following changes would be recommended
 
